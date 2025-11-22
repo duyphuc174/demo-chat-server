@@ -15,11 +15,12 @@ export const isAuth = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    console.log(decoded);
 
     req.user = await User.findById(decoded.id).select("-password");
     next();
   } catch (error) {
+    console.log(error);
+    
     return res.status(400).json({
       message: error.message,
       status: "error",

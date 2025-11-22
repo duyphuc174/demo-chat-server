@@ -7,7 +7,7 @@ const messageSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Conversation",
     },
-    senderId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     content: String,
     attachments: [String],
   },

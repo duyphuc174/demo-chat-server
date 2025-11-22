@@ -23,7 +23,7 @@ export const findUsers = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      message: "Không tìm thấy người dùng",
+      message: error.message,
       status: "error",
       data: null,
     });
