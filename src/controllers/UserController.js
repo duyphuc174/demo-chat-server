@@ -3,17 +3,11 @@ import User from "../models/User.js";
 export const findUsers = async (req, res) => {
   try {
     const { search } = req.query;
-
-    if (!search) {
-      return res.status(200).json({
-        message: null,
-        status: "success",
-        data: [],
-      });
-    }
+    const user = req.user;
 
     const users = await User.find({
-      username: { $regex: search, $options: "i" },
+      username: { $regex: search || "", $options: "i" },
+      _id: { $ne: user.id },
     }).select("-password");
 
     return res.status(200).json({

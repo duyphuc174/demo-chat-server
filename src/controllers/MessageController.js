@@ -1,5 +1,6 @@
 import Message from "../models/Message.js";
 import Conversation from "../models/Conversation.js";
+import SocketService from "../services/SocketService.js";
 
 export const sendMessage = async (req, res) => {
   try {
@@ -16,11 +17,16 @@ export const sendMessage = async (req, res) => {
       });
     }
 
-    const message = await Message.create({
+    const newMessage = await Message.create({
       conversationId,
       sender: user._id,
       content,
       attachments: [],
+    });
+
+    const message = await Message.findById(newMessage._id).populate({
+      path: "sender",
+      select: "-password",
     });
 
     if (!message) {
@@ -34,6 +40,8 @@ export const sendMessage = async (req, res) => {
     conversation.lastMessage = message._id;
     conversation.unreadCount += 1;
     await conversation.save();
+
+    SocketService.emitMessage(message, conversationId);
 
     return res.status(200).json({
       message: null,

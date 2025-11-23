@@ -1,4 +1,5 @@
 import Conversation from "../models/Conversation.js";
+import SocketService from "../services/SocketService.js";
 
 export const createConversation = async (req, res) => {
   try {
@@ -27,6 +28,8 @@ export const createConversation = async (req, res) => {
       isGroup: true,
       createdBy: user._id,
     });
+
+    SocketService.emitCoversation(conversation);
 
     return res.status(200).json({
       message: "Tạo nhóm thành công",
@@ -64,7 +67,13 @@ export const getMyConversations = async (req, res) => {
         path: "members",
         select: "-password",
       })
-      .populate("lastMessage")
+      .populate({
+        path: "lastMessage",
+        populate: {
+          path: "sender",
+          select: "-password",
+        },
+      })
       .populate({
         path: "createdBy",
         select: "-password",
@@ -83,6 +92,50 @@ export const getMyConversations = async (req, res) => {
       message: null,
       status: "success",
       data: conversations,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      status: "error",
+      data: null,
+    });
+  }
+};
+
+export const getConversationById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!id) {
+      return res.status(400).json({
+        message: "Vui lòng nhập id nhóm",
+        status: "error",
+        data: null,
+      });
+    }
+
+    const conversation = await Conversation.findById(id).populate({
+      path: "members",
+      select: "-password",
+    }).populate({
+      path: "lastMessage",
+      populate: {
+        path: "sender",
+        select: "-password",
+      }
+    });
+
+    if (!conversation) {
+      return res.status(400).json({
+        message: "Không tìm thấy nhóm",
+        status: "error",
+        data: null,
+      });
+    }
+
+    return res.status(200).json({
+      message: null,
+      status: "success",
+      data: conversation,
     });
   } catch (error) {
     return res.status(500).json({
