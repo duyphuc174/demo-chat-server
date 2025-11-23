@@ -6,7 +6,7 @@ export const register = async (req, res) => {
     const { username, fullname, password } = req.body;
 
     if (!username || !password) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Vui lòng nhập tài khoản và mật khẩu",
         status: "error",
         data: null,
@@ -16,7 +16,7 @@ export const register = async (req, res) => {
     const existingUser = await User.findOne({ username });
 
     if (existingUser) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Tài khoản đã tồn tại",
         status: "error",
         data: null,
@@ -48,7 +48,7 @@ export const login = async (req, res) => {
     const user = await User.findOne({ username });
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Sai tên tài khoản hoặc mật khẩu",
         status: "error",
         data: null,
@@ -56,7 +56,7 @@ export const login = async (req, res) => {
     }
 
     if (user.password !== password) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Sai tên tài khoản hoặc mật khẩu",
         status: "error",
         data: null,

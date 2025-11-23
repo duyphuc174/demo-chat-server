@@ -106,7 +106,7 @@ export const getConversationById = async (req, res) => {
   try {
     const id = req.params.id;
     if (!id) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Vui lòng nhập id nhóm",
         status: "error",
         data: null,
@@ -125,7 +125,7 @@ export const getConversationById = async (req, res) => {
     });
 
     if (!conversation) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Không tìm thấy nhóm",
         status: "error",
         data: null,

@@ -7,7 +7,7 @@ export const isAuth = async (req, res, next) => {
     const token = authHeader.split(" ")[1];
 
     if (!token) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "Phiên đăng nhập hết hạn, vui lòng đăng nhập lại",
         status: "error",
         data: null,
@@ -21,7 +21,7 @@ export const isAuth = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     
-    return res.status(400).json({
+    return res.status(200).json({
       message: error.message,
       status: "error",
       data: null,
